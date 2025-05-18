@@ -255,7 +255,7 @@ export default function Home() {
                   حجز استشارة لـ {recentConsultations[currentConsultation].service} {consultationTimes[currentConsultation] || 'حديثاً'}
                 </p>
                 <a 
-                  href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20استشارة%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20استشارة%20في%20عيادة%20نيو%20ريان%20للأسنان" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-xs font-medium flex items-center mt-2 text-green-600 hover:text-green-700"
@@ -360,7 +360,7 @@ export default function Home() {
             <div className="hidden md:block">
               <motion.div whileHover={hoverScale} whileTap={{ scale: 0.95 }}>
                 <a 
-                  href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-white px-6 py-2 rounded-full transition duration-300 hover:opacity-90 flex items-center gap-2" 
@@ -472,7 +472,7 @@ export default function Home() {
                 </motion.a>
 
                 <motion.a 
-                  href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition duration-300 flex items-center justify-center gap-2"
@@ -680,7 +680,7 @@ export default function Home() {
           >
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">هل تحتاج إلى معلومات أكثر عن خدماتنا؟ تواصل معنا مباشرة للحصول على استشارة مجانية</p>
             <motion.a 
-              href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20معرفة%20المزيد%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
+              href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20معرفة%20المزيد%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-bold transition duration-300"
@@ -941,7 +941,7 @@ export default function Home() {
               <p className="text-lg opacity-90 mb-0">تواصل معنا عبر واتساب للحصول على استشارة سريعة أو حجز موعد فوري في عيادة نيو ريان للأسنان</p>
             </div>
             <motion.a 
-              href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
+              href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
               target="_blank" 
               rel="noopener noreferrer"
               className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 text-lg font-bold"
@@ -971,7 +971,7 @@ export default function Home() {
               <p className="text-gray-400 mb-4">نقدم خدمات طب الأسنان المتكاملة بأعلى معايير الجودة في الكويت (ترخيص وزارة الصحة رقم 211)</p>
               <div className="flex space-x-4 space-x-reverse">
                 <motion.a 
-                  href="https://wa.me/96555556666" 
+                  href="https://wa.me/+96566774401" 
                   className="text-gray-400 hover:text-green-500 transition duration-300"
                   whileHover={{ scale: 1.2 }}
                 >
@@ -1050,7 +1050,7 @@ export default function Home() {
                 </li>
                 <li className="mt-4">
                   <a 
-                    href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                    href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 text-sm w-fit mt-2"
@@ -1077,13 +1077,13 @@ export default function Home() {
                 <li className="flex items-start">
                   <i className="fas fa-phone-alt mt-1 ml-3 text-teal-500"></i>
                   <div>
-                    <a href="tel:+96522223333" className="hover:text-teal-300 transition-colors">+965 2222 3333</a><br/>
-                    <a href="tel:+96555556666" className="hover:text-teal-300 transition-colors">+965 5555 6666</a>
+                    <a href="tel:+96566774401" className="hover:text-teal-300 transition-colors">66774401</a><br/>
+                    <a href="tel:+96566774402" className="hover:text-teal-300 transition-colors">66774402</a>
                   </div>
                 </li>
                 <li className="flex items-start">
                   <i className="fas fa-envelope mt-1 ml-3 text-teal-500"></i>
-                  <span><a href="mailto:info@newrayandental.com" className="hover:text-teal-300 transition-colors">info@newrayandental.com</a></span>
+                  <span><a href="mailto:info@new-rayan-dental.com" className="hover:text-teal-300 transition-colors">info@new-rayan-dental.com</a></span>
                 </li>
               </ul>
             </motion.div>
@@ -1120,8 +1120,8 @@ export default function Home() {
         </div>
         <div className="mt-3 text-center">
           <a 
-            href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20قبل%20نفاذ%20المواعيد%20المتاحة" 
-            target="_blank" 
+            href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20قبل%20نفاذ%20المواعيد%20المتاحة" 
+            target="_blank"
             rel="noopener noreferrer"
             className="text-xs bg-green-500 text-white px-3 py-1 rounded-full hover:bg-green-600 inline-flex items-center"
           >
@@ -1132,7 +1132,7 @@ export default function Home() {
 
       {/* WhatsApp Floating Button */}
       <motion.a 
-        href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
+        href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
         target="_blank" 
         rel="noopener noreferrer"
         className="fixed bottom-24 left-6 bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 z-50"
