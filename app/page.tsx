@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { createPortal } from "react-dom";
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -29,10 +30,28 @@ export default function Home() {
   const [bookedToday, setBookedToday] = useState(0);
   const [consultationTimes, setConsultationTimes] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [portalContainer, setPortalContainer] = useState<Element | null>(null);
 
-  // Set hydration state
+  // Set hydration state and create portal container
   useEffect(() => {
     setIsHydrated(true);
+    // Create portal container for notifications
+    if (typeof document !== "undefined") {
+      let container = document.getElementById("notification-portal");
+      if (!container) {
+        container = document.createElement("div");
+        container.id = "notification-portal";
+        container.style.position = "fixed";
+        container.style.top = "0";
+        container.style.left = "0";
+        container.style.width = "100%";
+        container.style.height = "100%";
+        container.style.pointerEvents = "none";
+        container.style.zIndex = "9999";
+        document.body.appendChild(container);
+      }
+      setPortalContainer(container);
+    }
   }, []);
 
   // Smooth scroll function
@@ -94,27 +113,38 @@ export default function Home() {
   useEffect(() => {
     if (!isHydrated) return;
     
-    // Show first notification after 5 seconds
-    const firstTimer = setTimeout(() => {
+    let notificationTimer: NodeJS.Timeout;
+    let cycleTimer: NodeJS.Timeout;
+    
+    const showNotification = () => {
       setSocialProofVisible(true);
-    }, 5000);
-
-    // Cycle through consultations every 15 seconds
-    const interval = setInterval(() => {
-      setSocialProofVisible(false);
       
-      // Hide for 2 seconds then show the next one
-      setTimeout(() => {
-        setCurrentConsultation((prev) => (prev + 1) % recentConsultations.length);
-        setSocialProofVisible(true);
-      }, 2000);
-    }, 15000);
-
-    return () => {
-      clearTimeout(firstTimer);
-      clearInterval(interval);
+      // Reset the timer when showing notification
+      clearTimeout(notificationTimer);
+      
+      // Auto-hide after 15 seconds
+      notificationTimer = setTimeout(() => {
+        setSocialProofVisible(false);
+        
+        // After hiding, wait 2 seconds then show the next one
+        cycleTimer = setTimeout(() => {
+          setCurrentConsultation((prev) => (prev + 1) % recentConsultations.length);
+          showNotification();
+        }, 2000);
+      }, 15000);
     };
-  }, [isHydrated]);
+    
+    // Start the initial notification after 5 seconds
+    const initialTimer = setTimeout(() => {
+      showNotification();
+    }, 5000);
+    
+    return () => {
+      clearTimeout(initialTimer);
+      clearTimeout(notificationTimer);
+      clearTimeout(cycleTimer);
+    };
+  }, [isHydrated, recentConsultations.length]);
 
   // Simulate live visitors and bookings - only run on client side
   useEffect(() => {
@@ -194,56 +224,70 @@ export default function Home() {
     transition: { duration: 0.3 }
   };
 
-  // Social Proof component
-  const SocialProofNotification = () => (
-    <AnimatePresence>
-      {socialProofVisible && (
-        <motion.div 
-          className="fixed bottom-24 right-6 bg-white rounded-lg shadow-xl p-4 z-50 max-w-[280px]"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 50 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        >
-          <div className="flex items-start">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-              <i className="fas fa-check text-green-600"></i>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-gray-800">
-                {recentConsultations[currentConsultation].name} من {recentConsultations[currentConsultation].city}
-              </p>
-              <p className="text-xs text-gray-600">
-                حجز استشارة لـ {recentConsultations[currentConsultation].service} {consultationTimes[currentConsultation] || 'حديثاً'}
-              </p>
-              <a 
-                href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20استشارة%20في%20عيادة%20نيو%20ريان%20للأسنان" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-xs font-medium flex items-center mt-2 text-green-600 hover:text-green-700"
+  // Simplified Social Proof component that uses a Portal
+  const SocialProofNotification = () => {
+    if (!portalContainer || !isHydrated) return null;
+    
+    return createPortal(
+      <AnimatePresence>
+        {socialProofVisible && (
+          <motion.div 
+            className="fixed bottom-24 md:right-6 right-2 bg-white rounded-lg shadow-xl p-4 max-w-[280px] w-[calc(100%-20px)] md:w-auto pointer-events-auto"
+            style={{ 
+              transform: 'translateZ(0)',  // Force hardware acceleration
+              backfaceVisibility: 'hidden',
+              perspective: 1000,
+            }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            <div className="flex items-start">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <i className="fas fa-check text-green-600"></i>
+              </div>
+              <div className="flex-grow overflow-hidden">
+                <p className="text-sm font-bold text-gray-800 truncate">
+                  {recentConsultations[currentConsultation].name} من {recentConsultations[currentConsultation].city}
+                </p>
+                <p className="text-xs text-gray-600">
+                  حجز استشارة لـ {recentConsultations[currentConsultation].service} {consultationTimes[currentConsultation] || 'حديثاً'}
+                </p>
+                <a 
+                  href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20استشارة%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium flex items-center mt-2 text-green-600 hover:text-green-700"
+                >
+                  <i className="fab fa-whatsapp mr-1"></i> احجز استشارتك الآن
+                </a>
+              </div>
+              <button 
+                className="text-gray-400 hover:text-gray-600 mr-1 flex-shrink-0"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSocialProofVisible(false);
+                }}
               >
-                <i className="fab fa-whatsapp mr-1"></i> احجز استشارتك الآن
-              </a>
+                <i className="fas fa-times text-xs"></i>
+              </button>
             </div>
-            <button 
-              className="text-gray-400 hover:text-gray-600 mr-1"
-              onClick={() => setSocialProofVisible(false)}
-            >
-              <i className="fas fa-times text-xs"></i>
-            </button>
-          </div>
-          <div className="w-full bg-gray-200 h-1 mt-2 rounded-full overflow-hidden">
-            <motion.div 
-              className="bg-green-500 h-full"
-              initial={{ width: "100%" }}
-              animate={{ width: "0%" }}
-              transition={{ duration: 15, ease: "linear" }}
-            />
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+            <div className="w-full bg-gray-200 h-1 mt-2 rounded-full overflow-hidden">
+              <motion.div 
+                className="bg-green-500 h-full"
+                initial={{ width: "100%" }}
+                animate={{ width: "0%" }}
+                transition={{ duration: 15, ease: "linear" }}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>,
+      portalContainer
+    );
+  };
 
   return (
     <div className="font-[family-name:var(--font-tajawal)] bg-gray-50 text-right">
@@ -877,12 +921,6 @@ export default function Home() {
             </div>
             <div className="text-center">
               <Image src="/partner-3.png" alt="شريك طبي" width={120} height={60} className="h-12 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
-            </div>
-            <div className="text-center">
-              <Image src="/partner-4.png" alt="شركة تأمين" width={120} height={60} className="h-12 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
-            </div>
-            <div className="text-center">
-              <Image src="/partner-5.png" alt="شركة تأمين" width={120} height={60} className="h-12 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
             </div>
           </motion.div>
         </div>
