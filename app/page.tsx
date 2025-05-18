@@ -316,11 +316,13 @@ export default function Home() {
             <div className="hidden md:block">
               <motion.div whileHover={hoverScale} whileTap={{ scale: 0.95 }}>
                 <a 
-                  href="#appointment" 
-                  onClick={(e) => scrollToSection(e, 'appointment')}
-                  className="text-white px-6 py-2 rounded-full transition duration-300 hover:opacity-90" 
+                  href="https://wa.me/96555556666?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-white px-6 py-2 rounded-full transition duration-300 hover:opacity-90 flex items-center gap-2" 
                   style={{background: brandBlue}}
                 >
+                  <i className="fab fa-whatsapp"></i>
                   احجز موعد
                 </a>
               </motion.div>
@@ -480,9 +482,27 @@ export default function Home() {
                 >
                   <div className="flex items-center">
                     <div className="flex -space-x-2 space-x-reverse overflow-hidden">
-                      <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="/testimonia-4.webp" alt="" />
-                      <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="/abd.webp" alt="" />
-                      <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="/testimonial-2.webp" alt="" />
+                      <Image 
+                        src="/testimonia-4.webp" 
+                        alt="عميل سعيد" 
+                        width={32} 
+                        height={32}
+                        className="inline-block h-8 w-8 rounded-full ring-2 ring-white" 
+                      />
+                      <Image 
+                        src="/abd.webp" 
+                        alt="عميل سعيد" 
+                        width={32} 
+                        height={32}
+                        className="inline-block h-8 w-8 rounded-full ring-2 ring-white" 
+                      />
+                      <Image 
+                        src="/testimonial-2.webp" 
+                        alt="عميل سعيد" 
+                        width={32} 
+                        height={32}
+                        className="inline-block h-8 w-8 rounded-full ring-2 ring-white" 
+                      />
                     </div>
                     <span className="mr-2 text-gray-700 text-sm">+2.6K عميل سعيد</span>
                   </div>
@@ -675,64 +695,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
-      {/* Doctors Section */}
-      {/* <section id="doctors" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">فريقنا الطبي المتميز</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">نفخر بفريقنا من الأطباء المتخصصين ذوي الخبرة العالية في مختلف المجالات الطبية</p>
-          </motion.div>
-          
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {doctors.map((doctor, index) => (
-              <motion.div 
-                key={index}
-                className="bg-gray-50 rounded-lg overflow-hidden shadow-md"
-                variants={fadeIn}
-                whileHover={{ y: -10, scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Image 
-                  src={doctor.image} 
-                  alt={doctor.name} 
-                  width={300} 
-                  height={300}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-1">{doctor.name}</h3>
-                  <p className="text-teal-600 font-medium mb-3">{doctor.specialty}</p>
-                  <p className="text-gray-600 mb-4">{doctor.bio}</p>
-                  <div className="flex justify-center space-x-4 space-x-reverse">
-                    <a href="#" className="text-gray-600 hover:text-teal-600 transition-colors">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" className="text-gray-600 hover:text-teal-600 transition-colors">
-                      <i className="fab fa-linkedin"></i>
-                    </a>
-                    <a href="#" className="text-gray-600 hover:text-teal-600 transition-colors">
-                      <i className="fab fa-facebook"></i>
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section> */}
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-16 bg-gray-50">
@@ -1199,34 +1161,6 @@ const services = [
     icon: "fas fa-check-circle",
     title: "تركيبات الأسنان",
     description: "تيجان وجسور وتركيبات متحركة عالية الجودة تعيد جمال ووظيفة أسنانك"
-  }
-];
-
-// Doctors data
-const doctors = [
-  {
-    name: "د. أحمد المطيري",
-    specialty: "استشاري جراحة الفم والأسنان",
-    bio: "خبرة أكثر من 15 عاماً في جراحات الفم وزراعة الأسنان وخريج جامعة لندن",
-    image: "/doctor-1.jpg"
-  },
-  {
-    name: "د. سارة العنزي",
-    specialty: "أخصائية تقويم الأسنان",
-    bio: "متخصصة في تقويم الأسنان للأطفال والبالغين بخبرة تزيد عن 12 عاماً",
-    image: "/doctor-2.jpg"
-  },
-  {
-    name: "د. محمد الفهد",
-    specialty: "أخصائي تجميل الأسنان",
-    bio: "متخصص في ابتسامة هوليوود وتجميل الأسنان بخبرة تتجاوز 10 أعوام",
-    image: "/doctor-3.jpg"
-  },
-  {
-    name: "د. نورة السالم",
-    specialty: "طبيبة أسنان الأطفال",
-    bio: "متخصصة في طب أسنان الأطفال وذوي الاحتياجات الخاصة بخبرة 8 أعوام",
-    image: "/doctor-4.jpg"
   }
 ];
 
