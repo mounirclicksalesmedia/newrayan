@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createPortal } from "react-dom";
@@ -144,7 +144,7 @@ export default function Home() {
       clearTimeout(notificationTimer);
       clearTimeout(cycleTimer);
     };
-  }, [isHydrated, recentConsultations.length]);
+  }, [isHydrated]);
 
   // Simulate live visitors and bookings - only run on client side
   useEffect(() => {
