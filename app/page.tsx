@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createPortal } from "react-dom";
+import Script from "next/script";
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -187,6 +188,15 @@ export default function Home() {
     </div>;
   }
 
+  // Track WhatsApp button click
+  const trackWhatsAppClick = () => {
+    if (typeof window !== 'undefined' && (window as any).snaptr) {
+      (window as any).snaptr('track', 'SIGN_UP', {
+        'sign_up_method': 'WhatsApp',
+      });
+    }
+  };
+
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
@@ -259,6 +269,7 @@ export default function Home() {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-xs font-medium flex items-center mt-2 text-green-600 hover:text-green-700"
+                  onClick={trackWhatsAppClick}
                 >
                   <i className="fab fa-whatsapp mr-1"></i> احجز استشارتك الآن
                 </a>
@@ -291,6 +302,24 @@ export default function Home() {
 
   return (
     <div className="font-[family-name:var(--font-tajawal)] bg-gray-50 text-right">
+      {/* Snap Pixel Code */}
+      <Script id="snap-pixel-script" strategy="afterInteractive">
+        {`
+          (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+          {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+          a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
+          r.src=n;var u=t.getElementsByTagName(s)[0];
+          u.parentNode.insertBefore(r,u);})(window,document,
+          'https://sc-static.net/scevent.min.js');
+
+          snaptr('init', '9734e9fd-6792-4e5e-a9a5-6ea69b0889dc', {
+            'user_email': '__INSERT_USER_EMAIL__'
+          });
+
+          snaptr('track', 'PAGE_VIEW');
+        `}
+      </Script>
+      
       {/* Header */}
       <motion.header 
         className="bg-white shadow-md sticky top-0 z-50"
@@ -365,6 +394,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="text-white px-6 py-2 rounded-full transition duration-300 hover:opacity-90 flex items-center gap-2" 
                   style={{background: brandBlue}}
+                  onClick={trackWhatsAppClick}
                 >
                   <i className="fab fa-whatsapp"></i>
                   احجز موعد
@@ -478,6 +508,7 @@ export default function Home() {
                   className="bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition duration-300 flex items-center justify-center gap-2"
                   whileHover={hoverScale}
                   whileTap={{ scale: 0.95 }}
+                  onClick={trackWhatsAppClick}
                 >
                   <i className="fab fa-whatsapp text-xl"></i>
                   احجز موعد عبر واتساب
@@ -636,6 +667,14 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            onViewportEnter={() => {
+              if (typeof window !== 'undefined' && (window as any).snaptr) {
+                (window as any).snaptr('track', 'VIEW_CONTENT', {
+                  'content_name': 'dental_services',
+                  'content_category': 'dental_care'
+                });
+              }
+            }}
           >
             <h2 className="text-3xl font-bold text-gray-800 mb-4">خدماتنا المتميزة</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">نقدم مجموعة متكاملة من خدمات طب الأسنان العلاجية والتجميلية والوقائية لكافة الأعمار</p>
@@ -686,6 +725,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-bold transition duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={trackWhatsAppClick}
             >
               <i className="fab fa-whatsapp text-xl"></i>
               تواصل معنا عبر واتساب
@@ -940,17 +980,18 @@ export default function Home() {
               <h2 className="text-2xl md:text-3xl font-bold mb-4">هل تحتاج إلى استشارة طبية لأسنانك؟</h2>
               <p className="text-lg opacity-90 mb-0">تواصل معنا عبر واتساب للحصول على استشارة سريعة أو حجز موعد فوري في عيادة نيو ريان للأسنان</p>
             </div>
-            <motion.a 
-              href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 text-lg font-bold"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <i className="fab fa-whatsapp text-2xl"></i>
-              تواصل عبر واتساب
-            </motion.a>
+                          <motion.a 
+                href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 text-lg font-bold"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={trackWhatsAppClick}
+              >
+                <i className="fab fa-whatsapp text-2xl"></i>
+                تواصل عبر واتساب
+              </motion.a>
           </motion.div>
         </div>
       </section>
@@ -974,6 +1015,7 @@ export default function Home() {
                   href="https://wa.me/+96566774401" 
                   className="text-gray-400 hover:text-green-500 transition duration-300"
                   whileHover={{ scale: 1.2 }}
+                  onClick={trackWhatsAppClick}
                 >
                   <i className="fab fa-whatsapp text-xl"></i>
                 </motion.a>
@@ -1054,6 +1096,7 @@ export default function Home() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 text-sm w-fit mt-2"
+                    onClick={trackWhatsAppClick}
                   >
                     <i className="fab fa-whatsapp"></i>
                     احجز موعد عبر واتساب
@@ -1124,6 +1167,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs bg-green-500 text-white px-3 py-1 rounded-full hover:bg-green-600 inline-flex items-center"
+            onClick={trackWhatsAppClick}
           >
             <i className="fab fa-whatsapp mr-1"></i> احجز قبل نفاذ المواعيد
           </a>
@@ -1141,6 +1185,7 @@ export default function Home() {
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 1 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
+        onClick={trackWhatsAppClick}
       >
         <i className="fab fa-whatsapp text-3xl"></i>
       </motion.a>
