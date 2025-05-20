@@ -69,8 +69,9 @@ export default function Home() {
 
   // To enable RTL layout globally
   useEffect(() => {
-    document.documentElement.dir = "rtl";
-    document.documentElement.lang = "ar";
+    // Remove direct RTL/lang manipulation since it's now handled in layout.tsx
+    // document.documentElement.dir = "rtl";
+    // document.documentElement.lang = "ar";
     document.title = "عيادة نيو ريان للأسنان | خدمات طب الأسنان المتميزة في الكويت";
     
     const handleScroll = () => {
@@ -745,7 +746,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Video Section */}
+      {/* Video Section 
       <section className="py-16" style={{background: `${brandBlue}10`}}>
         <div className="container mx-auto px-4">
           <motion.div 
@@ -789,7 +790,7 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-      </section>
+      </section>*/}
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-16 bg-gray-50">
