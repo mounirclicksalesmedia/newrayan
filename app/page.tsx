@@ -188,12 +188,20 @@ export default function Home() {
     </div>;
   }
 
+  // Define snaptr type for TypeScript
+  interface SnaptrWindow extends Window {
+    snaptr?: (command: string, event: string, params?: Record<string, string>) => void;
+  }
+
   // Track WhatsApp button click
   const trackWhatsAppClick = () => {
-    if (typeof window !== 'undefined' && (window as any).snaptr) {
-      (window as any).snaptr('track', 'SIGN_UP', {
-        'sign_up_method': 'WhatsApp',
-      });
+    if (typeof window !== 'undefined' && (window as SnaptrWindow).snaptr) {
+      const snaptr = (window as SnaptrWindow).snaptr;
+      if (snaptr) {
+        snaptr('track', 'SIGN_UP', {
+          'sign_up_method': 'WhatsApp',
+        });
+      }
     }
   };
 
@@ -668,11 +676,14 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             onViewportEnter={() => {
-              if (typeof window !== 'undefined' && (window as any).snaptr) {
-                (window as any).snaptr('track', 'VIEW_CONTENT', {
-                  'content_name': 'dental_services',
-                  'content_category': 'dental_care'
-                });
+              if (typeof window !== 'undefined' && (window as SnaptrWindow).snaptr) {
+                const snaptr = (window as SnaptrWindow).snaptr;
+                if (snaptr) {
+                  snaptr('track', 'VIEW_CONTENT', {
+                    'content_name': 'dental_services',
+                    'content_category': 'dental_care'
+                  });
+                }
               }
             }}
           >
