@@ -194,6 +194,12 @@ export default function Home() {
     snaptr?: (command: string, event: string, params?: Record<string, string>) => void;
   }
 
+  // Define gtag type for TypeScript
+  interface GtagWindow extends Window {
+    gtag?: (command: string, action: string, params?: Record<string, any>) => void;
+    dataLayer?: any[];
+  }
+
   // Track WhatsApp button click
   const trackWhatsAppClick = () => {
     if (typeof window !== 'undefined' && (window as SnaptrWindow).snaptr) {
@@ -201,6 +207,17 @@ export default function Home() {
       if (snaptr) {
         snaptr('track', 'SIGN_UP', {
           'sign_up_method': 'WhatsApp',
+        });
+      }
+    }
+
+    // Google Analytics 4 event tracking
+    if (typeof window !== 'undefined') {
+      const gtagWindow = window as GtagWindow;
+      if (gtagWindow.gtag) {
+        gtagWindow.gtag('event', 'whatsapp_click_button', {
+          'event_name': 'WhatsApp click button',
+          'page_location': window.location.href
         });
       }
     }
