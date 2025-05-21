@@ -1,9 +1,30 @@
 import { NextResponse } from 'next/server';
 
+interface ConversionData {
+  ip?: string;
+  userAgent?: string;
+  url?: string;
+}
+
+interface EventData {
+  event_name: string;
+  event_time: number;
+  action_source: string;
+  user_data: {
+    client_ip_address: string;
+    client_user_agent: string;
+  };
+}
+
+interface ConversionPayload {
+  data: EventData[];
+  access_token: string;
+}
+
 // Meta Pixel server-side conversion API
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
+    const data = await request.json() as ConversionData;
     
     // Facebook Conversion API endpoint
     const url = 'https://graph.facebook.com/v17.0/714361667908702/events';
@@ -15,7 +36,7 @@ export async function POST(request: Request) {
     const event_time = Math.floor(Date.now() / 1000);
     
     // Prepare the event data
-    const eventData = {
+    const eventData: ConversionPayload = {
       data: [
         {
           event_name: "whatsapp_button",

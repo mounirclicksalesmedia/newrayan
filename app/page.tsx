@@ -196,13 +196,13 @@ export default function Home() {
 
   // Define gtag type for TypeScript
   interface GtagWindow extends Window {
-    gtag?: (command: string, action: string, params?: Record<string, any>) => void;
-    dataLayer?: any[];
+    gtag?: (command: string, action: string, params?: Record<string, string | number | boolean | null>) => void;
+    dataLayer?: unknown[];
   }
 
   // Define fbq type for TypeScript
   interface FbqWindow extends Window {
-    fbq?: (command: string, event: string, params?: Record<string, any>) => void;
+    fbq?: (command: string, event: string, params?: Record<string, string | number | boolean | null>) => void;
   }
 
   // Track WhatsApp button click
