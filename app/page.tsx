@@ -200,6 +200,11 @@ export default function Home() {
     dataLayer?: any[];
   }
 
+  // Define fbq type for TypeScript
+  interface FbqWindow extends Window {
+    fbq?: (command: string, event: string, params?: Record<string, any>) => void;
+  }
+
   // Track WhatsApp button click
   const trackWhatsAppClick = () => {
     if (typeof window !== 'undefined' && (window as SnaptrWindow).snaptr) {
@@ -219,6 +224,30 @@ export default function Home() {
           'event_name': 'WhatsApp click button',
           'page_location': window.location.href
         });
+      }
+    }
+
+    // Meta Pixel event tracking
+    if (typeof window !== 'undefined') {
+      const fbqWindow = window as FbqWindow;
+      if (fbqWindow.fbq) {
+        fbqWindow.fbq('track', 'whatsapp_button');
+      }
+
+      // Also send server-side conversion event
+      try {
+        fetch('/api/meta-conversion', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userAgent: navigator.userAgent,
+            url: window.location.href
+          }),
+        });
+      } catch (error) {
+        console.error('Error sending Meta conversion event:', error);
       }
     }
   };
