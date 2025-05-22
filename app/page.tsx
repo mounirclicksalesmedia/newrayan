@@ -198,6 +198,7 @@ export default function Home() {
   interface GtagWindow extends Window {
     gtag?: (command: string, action: string, params?: Record<string, string | number | boolean | null>) => void;
     dataLayer?: unknown[];
+    gtag_report_conversion?: (url?: string) => boolean;
   }
 
   // Define fbq type for TypeScript
@@ -223,6 +224,16 @@ export default function Home() {
         gtagWindow.gtag('event', 'whatsapp_click_button', {
           'event_name': 'WhatsApp click button',
           'page_location': window.location.href
+        });
+      }
+      
+      // Google Ads conversion tracking
+      if (gtagWindow.gtag_report_conversion) {
+        gtagWindow.gtag_report_conversion();
+      } else if (gtagWindow.gtag) {
+        // Fallback if gtag_report_conversion is not defined
+        gtagWindow.gtag('event', 'conversion', {
+          'send_to': 'AW-16636659682/jMyLCIWYgMwaEOKP_fw9'
         });
       }
     }
@@ -324,7 +335,7 @@ export default function Home() {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-xs font-medium flex items-center mt-2 text-green-600 hover:text-green-700"
-                  onClick={trackWhatsAppClick}
+                  onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20استشارة%20في%20عيادة%20نيو%20ريان%20للأسنان")}
                 >
                   <i className="fab fa-whatsapp mr-1"></i> احجز استشارتك الآن
                 </a>
@@ -353,6 +364,14 @@ export default function Home() {
       </AnimatePresence>,
       portalContainer
     );
+  };
+
+  // Helper function to handle WhatsApp clicks
+  const handleWhatsAppClick = (whatsappUrl: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    trackWhatsAppClick();
+    // Open WhatsApp after tracking is complete
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
@@ -449,7 +468,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="text-white px-6 py-2 rounded-full transition duration-300 hover:opacity-90 flex items-center gap-2" 
                   style={{background: brandBlue}}
-                  onClick={trackWhatsAppClick}
+                  onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان")}
                 >
                   <i className="fab fa-whatsapp"></i>
                   احجز موعد
@@ -563,7 +582,7 @@ export default function Home() {
                   className="bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition duration-300 flex items-center justify-center gap-2"
                   whileHover={hoverScale}
                   whileTap={{ scale: 0.95 }}
-                  onClick={trackWhatsAppClick}
+                  onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان")}
                 >
                   <i className="fab fa-whatsapp text-xl"></i>
                   احجز موعد عبر واتساب
@@ -783,7 +802,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-bold transition duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={trackWhatsAppClick}
+              onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20معرفة%20المزيد%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان")}
             >
               <i className="fab fa-whatsapp text-xl"></i>
               تواصل معنا عبر واتساب
@@ -791,52 +810,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
-      {/* Video Section 
-      <section className="py-16" style={{background: `${brandBlue}10`}}>
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">تعرف على عيادتنا</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">شاهد جولة افتراضية داخل مرافق عيادتنا المتطورة وتعرف على فريقنا الطبي</p>
-          </motion.div>
-          <motion.div 
-            className="bg-white p-4 rounded-xl shadow-lg max-w-4xl mx-auto"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="aspect-w-16 aspect-h-9 relative">
-              <div className="w-full pt-[56.25%] relative">
-                <Image 
-                  src="/video-thumbnail.jpg" 
-                  alt="فيديو تعريفي عن العيادة" 
-                  fill
-                  className="rounded-lg absolute top-0 left-0 object-cover"
-                />
-                <motion.div 
-                  className="absolute inset-0 flex items-center justify-center"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
-                  <button className="w-20 h-20 rounded-full flex items-center justify-center hover:opacity-90 transition duration-300 shadow-lg" style={{background: brandOrange}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </button>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>*/}
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-16 bg-gray-50">
@@ -1045,7 +1018,7 @@ export default function Home() {
                 className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 text-lg font-bold"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={trackWhatsAppClick}
+                onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان")}
               >
                 <i className="fab fa-whatsapp text-2xl"></i>
                 تواصل عبر واتساب
@@ -1073,7 +1046,7 @@ export default function Home() {
                   href="https://wa.me/+96566774401" 
                   className="text-gray-400 hover:text-green-500 transition duration-300"
                   whileHover={{ scale: 1.2 }}
-                  onClick={trackWhatsAppClick}
+                  onClick={handleWhatsAppClick("https://wa.me/+96566774401")}
                 >
                   <i className="fab fa-whatsapp text-xl"></i>
                 </motion.a>
@@ -1154,7 +1127,7 @@ export default function Home() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 text-sm w-fit mt-2"
-                    onClick={trackWhatsAppClick}
+                    onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان")}
                   >
                     <i className="fab fa-whatsapp"></i>
                     احجز موعد عبر واتساب
@@ -1225,7 +1198,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs bg-green-500 text-white px-3 py-1 rounded-full hover:bg-green-600 inline-flex items-center"
-            onClick={trackWhatsAppClick}
+            onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20قبل%20نفاذ%20المواعيد%20المتاحة")}
           >
             <i className="fab fa-whatsapp mr-1"></i> احجز قبل نفاذ المواعيد
           </a>
@@ -1243,7 +1216,7 @@ export default function Home() {
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 1 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={trackWhatsAppClick}
+        onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان")}
       >
         <i className="fab fa-whatsapp text-3xl"></i>
       </motion.a>
