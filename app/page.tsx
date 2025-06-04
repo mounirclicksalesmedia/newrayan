@@ -1114,12 +1114,16 @@ export default function Home() {
               <h3 className="text-xl font-bold mb-4">ساعات العمل</h3>
               <ul className="space-y-2">
                 <li className="flex justify-between text-gray-400">
-                  <span>السبت - الخميس:</span>
-                  <span>9:00 - 21:00</span>
+                  <span>السبت - الأربعاء:</span>
+                  <span>12:00 ظهراً - 8:00 مساءً</span>
+                </li>
+                <li className="flex justify-between text-gray-400">
+                  <span>الخميس:</span>
+                  <span>11:00 صباحاً - 7:00 مساءً</span>
                 </li>
                 <li className="flex justify-between text-gray-400">
                   <span>الجمعة:</span>
-                  <span>14:00 - 20:00</span>
+                  <span>مغلق</span>
                 </li>
                 <li className="mt-4">
                   <a 
@@ -1146,13 +1150,23 @@ export default function Home() {
               <ul className="space-y-4">
                 <li className="flex items-start">
                   <i className="fas fa-map-marker-alt mt-1 ml-3 text-teal-500"></i>
-                  <span>شارع الخليج العربي، منطقة السالمية، الكويت</span>
+                  <div>
+                    <span>34WH+JJC, Mangaf, Kuwait</span>
+                    <br />
+                    <a 
+                      href="https://www.google.com/maps/place/New+rayan+clinic/@29.096565,48.129013,17z/data=!3m1!4b1!4m6!3m5!1s0x3fcf076f27f35877:0x3c5a895a65397331!8m2!3d29.096565!4d48.129013!16s%2Fg%2F11h3brf_x9?entry=ttu&g_ep=EgoyMDI1MDYwMS4wIKXMDSoASAFQAw%3D%3D"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-teal-300 hover:text-teal-200 transition-colors"
+                    >
+                      اضغط للوصول عبر خرائط جوجل
+                    </a>
+                  </div>
                 </li>
                 <li className="flex items-start">
                   <i className="fas fa-phone-alt mt-1 ml-3 text-teal-500"></i>
                   <div>
-                    <a href="tel:+96566774401" className="hover:text-teal-300 transition-colors">66774401</a><br/>
-                    <a href="tel:+96566774402" className="hover:text-teal-300 transition-colors">66774402</a>
+                    <a href="tel:+96594040711" className="hover:text-teal-300 transition-colors">96594040711</a>
                   </div>
                 </li>
                 <li className="flex items-start">
