@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import Script from "next/script";
+import { useSearchParams } from 'next/navigation';
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -21,7 +22,7 @@ const recentConsultations = [
   { name: "عبدالله ر.", service: "تركيبات الأسنان", city: "الجهراء" }
 ];
 
-export default function Home() {
+function HomeContent() {
   const [scrollY, setScrollY] = useState(0);
   const [backToTopVisible, setBackToTopVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -33,20 +34,27 @@ export default function Home() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [portalContainer, setPortalContainer] = useState<Element | null>(null);
   
-  // Helper function to build WhatsApp URLs with UTM parameters
+  const searchParams = useSearchParams();
+
   const buildWhatsAppUrl = useCallback((message: string) => {
     const base = 'https://wa.me/+96594040711';
     const text = encodeURIComponent(message);
-    
-    // Only access URLSearchParams on client side
-    if (typeof window !== 'undefined') {
-      const utmParams = new URLSearchParams(window.location.search).toString();
-      if (utmParams) {
-        return `${base}?text=${text}&${utmParams}`;
-      }
-    }
-    return `${base}?text=${text}`;
-  }, []);
+
+    // grab UTM and gclid
+    const utmSource   = searchParams.get('utm_source');
+    const utmCampaign = searchParams.get('utm_campaign');
+    const gclid       = searchParams.get('gclid');
+
+    // collect them
+    const params = [
+      `text=${text}`,
+      utmSource   && `utm_source=${utmSource}`,
+      utmCampaign && `utm_campaign=${utmCampaign}`,
+      gclid       && `gclid=${gclid}`,
+    ].filter(Boolean);
+
+    return `${base}?${params.join('&')}`;
+  }, [searchParams]);
 
   // Set hydration state and create portal container
   useEffect(() => {
@@ -1337,3 +1345,21 @@ const stats = [
   { value: "98%", label: "نسبة رضا المرضى" },
   { value: "+10", label: "سنوات من الخبرة" }
 ];
+
+// Loading component for Suspense fallback
+function LoadingPage() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-16 h-16 border-4 rounded-full animate-spin" style={{borderColor: brandBlue, borderTopColor: 'transparent'}}></div>
+    </div>
+  );
+}
+
+// Main component with Suspense wrapper
+export default function Home() {
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <HomeContent />
+    </Suspense>
+  );
+}
