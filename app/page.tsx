@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import Script from "next/script";
-import { useSearchParams, usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -36,7 +36,6 @@ export default function Home() {
   
   // App Router hooks for UTM parameters
   const searchParams = useSearchParams();
-  const pathname = usePathname();
 
   // Helper function to build WhatsApp URLs with UTM parameters
   const buildWhatsAppUrl = useCallback((message: string) => {
