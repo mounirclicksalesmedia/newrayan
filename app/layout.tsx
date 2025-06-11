@@ -46,14 +46,14 @@ export default function RootLayout({
         />
         
         {/* Google Ads tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16636659682"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17159080860"></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'AW-16636659682');
+              gtag('config', 'AW-17159080860');
               
               // Google Ads Conversion Tracking
               function gtag_report_conversion(url) {
@@ -63,7 +63,7 @@ export default function RootLayout({
                   }
                 };
                 gtag('event', 'conversion', {
-                  'send_to': 'AW-16636659682/jMyLCIWYgMwaEOKP_fw9',
+                  'send_to': 'AW-17159080860/r5f1CJzdktgaEJyXi_Y_',
                   'event_callback': callback
                 });
                 return false;

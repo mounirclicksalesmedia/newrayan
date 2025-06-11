@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import Script from "next/script";
+import { useSearchParams, usePathname } from 'next/navigation';
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -32,6 +33,22 @@ export default function Home() {
   const [consultationTimes, setConsultationTimes] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
   const [portalContainer, setPortalContainer] = useState<Element | null>(null);
+  
+  // App Router hooks for UTM parameters
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  // Helper function to build WhatsApp URLs with UTM parameters
+  const buildWhatsAppUrl = useCallback((message: string) => {
+    const base = 'https://wa.me/+96594040711';
+    const text = encodeURIComponent(message);
+    const utmParams = searchParams.toString();
+    
+    if (utmParams) {
+      return `${base}?text=${text}&${utmParams}`;
+    }
+    return `${base}?text=${text}`;
+  }, [searchParams]);
 
   // Set hydration state and create portal container
   useEffect(() => {
@@ -233,7 +250,7 @@ export default function Home() {
       } else if (gtagWindow.gtag) {
         // Fallback if gtag_report_conversion is not defined
         gtagWindow.gtag('event', 'conversion', {
-          'send_to': 'AW-16636659682/jMyLCIWYgMwaEOKP_fw9'
+          'send_to': 'AW-17159080860/r5f1CJzdktgaEJyXi_Y_'
         });
       }
     }
@@ -331,11 +348,11 @@ export default function Home() {
                   حجز استشارة لـ {recentConsultations[currentConsultation].service} {consultationTimes[currentConsultation] || 'حديثاً'}
                 </p>
                 <a 
-                  href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20استشارة%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  href={buildWhatsAppUrl("مرحباً، أرغب في حجز استشارة في عيادة نيو ريان للأسنان")} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-xs font-medium flex items-center mt-2 text-green-600 hover:text-green-700"
-                  onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20استشارة%20في%20عيادة%20نيو%20ريان%20للأسنان")}
+                  onClick={handleWhatsAppClick("مرحباً، أرغب في حجز استشارة في عيادة نيو ريان للأسنان")}
                 >
                   <i className="fab fa-whatsapp mr-1"></i> احجز استشارتك الآن
                 </a>
@@ -367,10 +384,11 @@ export default function Home() {
   };
 
   // Helper function to handle WhatsApp clicks
-  const handleWhatsAppClick = (whatsappUrl: string) => (e: React.MouseEvent) => {
+  const handleWhatsAppClick = (message: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     trackWhatsAppClick();
-    // Open WhatsApp after tracking is complete
+    // Open WhatsApp with UTM parameters after tracking is complete
+    const whatsappUrl = buildWhatsAppUrl(message);
     window.open(whatsappUrl, "_blank");
   };
 
@@ -463,12 +481,12 @@ export default function Home() {
             <div className="hidden md:block">
               <motion.div whileHover={hoverScale} whileTap={{ scale: 0.95 }}>
                 <a 
-                  href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  href={buildWhatsAppUrl("مرحباً، أرغب في حجز موعد في عيادة نيو ريان للأسنان")} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-white px-6 py-2 rounded-full transition duration-300 hover:opacity-90 flex items-center gap-2" 
                   style={{background: brandBlue}}
-                  onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان")}
+                  onClick={handleWhatsAppClick("مرحباً، أرغب في حجز موعد عبر واتساب")}
                 >
                   <i className="fab fa-whatsapp"></i>
                   احجز موعد
@@ -576,13 +594,13 @@ export default function Home() {
                 </motion.a>
 
                 <motion.a 
-                  href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                  href={buildWhatsAppUrl("مرحباً، أرغب في حجز موعد عبر واتساب")} 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition duration-300 flex items-center justify-center gap-2"
                   whileHover={hoverScale}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان")}
+                  onClick={handleWhatsAppClick("مرحباً، أرغب في حجز موعد عبر واتساب")}
                 >
                   <i className="fab fa-whatsapp text-xl"></i>
                   احجز موعد عبر واتساب
@@ -796,13 +814,13 @@ export default function Home() {
           >
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">هل تحتاج إلى معلومات أكثر عن خدماتنا؟ تواصل معنا مباشرة للحصول على استشارة مجانية</p>
             <motion.a 
-              href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20معرفة%20المزيد%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
+              href={buildWhatsAppUrl("مرحباً، أرغب في معرفة المزيد عن خدمات عيادة نيو ريان للأسنان")} 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-bold transition duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20معرفة%20المزيد%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان")}
+              onClick={handleWhatsAppClick("مرحباً، أرغب في حجز موعد عبر واتساب")}
             >
               <i className="fab fa-whatsapp text-xl"></i>
               تواصل معنا عبر واتساب
@@ -1011,18 +1029,18 @@ export default function Home() {
               <h2 className="text-2xl md:text-3xl font-bold mb-4">هل تحتاج إلى استشارة طبية لأسنانك؟</h2>
               <p className="text-lg opacity-90 mb-0">تواصل معنا عبر واتساب للحصول على استشارة سريعة أو حجز موعد فوري في عيادة نيو ريان للأسنان</p>
             </div>
-                          <motion.a 
-                href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 text-lg font-bold"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان")}
-              >
-                <i className="fab fa-whatsapp text-2xl"></i>
-                تواصل عبر واتساب
-              </motion.a>
+                                      <motion.a 
+              href={buildWhatsAppUrl("مرحباً، أرغب في حجز موعد في عيادة نيو ريان للأسنان")} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 text-lg font-bold"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleWhatsAppClick("مرحباً، أرغب في حجز موعد عبر واتساب")}
+            >
+              <i className="fab fa-whatsapp text-2xl"></i>
+              تواصل عبر واتساب
+            </motion.a>
           </motion.div>
         </div>
       </section>
@@ -1043,10 +1061,10 @@ export default function Home() {
               <p className="text-gray-400 mb-4">نقدم خدمات طب الأسنان المتكاملة بأعلى معايير الجودة في الكويت (ترخيص وزارة الصحة رقم 211)</p>
               <div className="flex space-x-4 space-x-reverse">
                 <motion.a 
-                  href="https://wa.me/+96566774401" 
+                  href={buildWhatsAppUrl("مرحباً، أرغب في التواصل مع عيادة نيو ريان للأسنان")} 
                   className="text-gray-400 hover:text-green-500 transition duration-300"
                   whileHover={{ scale: 1.2 }}
-                  onClick={handleWhatsAppClick("https://wa.me/+96566774401")}
+                  onClick={handleWhatsAppClick("مرحباً، أرغب في التواصل مع عيادة نيو ريان للأسنان")}
                 >
                   <i className="fab fa-whatsapp text-xl"></i>
                 </motion.a>
@@ -1127,11 +1145,11 @@ export default function Home() {
                 </li>
                 <li className="mt-4">
                   <a 
-                    href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان" 
+                    href={buildWhatsAppUrl("مرحباً، أرغب في حجز موعد في عيادة نيو ريان للأسنان")} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 text-sm w-fit mt-2"
-                    onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20في%20عيادة%20نيو%20ريان%20للأسنان")}
+                    onClick={handleWhatsAppClick("مرحباً، أرغب في حجز موعد عبر واتساب")}
                   >
                     <i className="fab fa-whatsapp"></i>
                     احجز موعد عبر واتساب
@@ -1208,11 +1226,11 @@ export default function Home() {
         </div>
         <div className="mt-3 text-center">
           <a 
-            href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20قبل%20نفاذ%20المواعيد%20المتاحة" 
+            href={buildWhatsAppUrl("مرحباً، أرغب في حجز موعد قبل نفاذ المواعيد المتاحة")} 
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs bg-green-500 text-white px-3 py-1 rounded-full hover:bg-green-600 inline-flex items-center"
-            onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20حجز%20موعد%20قبل%20نفاذ%20المواعيد%20المتاحة")}
+            onClick={handleWhatsAppClick("مرحباً، أرغب في حجز موعد قبل نفاذ المواعيد المتاحة")}
           >
             <i className="fab fa-whatsapp mr-1"></i> احجز قبل نفاذ المواعيد
           </a>
@@ -1221,7 +1239,7 @@ export default function Home() {
 
       {/* WhatsApp Floating Button */}
       <motion.a 
-        href="https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان" 
+        href={buildWhatsAppUrl("مرحباً، أرغب في حجز موعد في عيادة نيو ريان للأسنان")} 
         target="_blank" 
         rel="noopener noreferrer"
         className="fixed bottom-24 left-6 bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 z-50"
@@ -1230,7 +1248,7 @@ export default function Home() {
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 1 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={handleWhatsAppClick("https://wa.me/+96566774401?text=مرحباً،%20أرغب%20في%20الاستفسار%20عن%20خدمات%20عيادة%20نيو%20ريان%20للأسنان")}
+        onClick={handleWhatsAppClick("مرحباً، أرغب في حجز موعد عبر واتساب")}
       >
         <i className="fab fa-whatsapp text-3xl"></i>
       </motion.a>
