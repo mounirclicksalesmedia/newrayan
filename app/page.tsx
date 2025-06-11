@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import Script from "next/script";
-import { useSearchParams } from 'next/navigation';
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -34,20 +33,20 @@ export default function Home() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [portalContainer, setPortalContainer] = useState<Element | null>(null);
   
-  // App Router hooks for UTM parameters
-  const searchParams = useSearchParams();
-
   // Helper function to build WhatsApp URLs with UTM parameters
   const buildWhatsAppUrl = useCallback((message: string) => {
     const base = 'https://wa.me/+96594040711';
     const text = encodeURIComponent(message);
-    const utmParams = searchParams.toString();
     
-    if (utmParams) {
-      return `${base}?text=${text}&${utmParams}`;
+    // Only access URLSearchParams on client side
+    if (typeof window !== 'undefined') {
+      const utmParams = new URLSearchParams(window.location.search).toString();
+      if (utmParams) {
+        return `${base}?text=${text}&${utmParams}`;
+      }
     }
     return `${base}?text=${text}`;
-  }, [searchParams]);
+  }, []);
 
   // Set hydration state and create portal container
   useEffect(() => {
