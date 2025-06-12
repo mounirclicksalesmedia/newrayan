@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     // Facebook Conversion API endpoint
     const url = 'https://graph.facebook.com/v17.0/714361667908702/events';
     
-    // Access token from environment variable or directly (for testing)
+    // Access token - updated for new number +96566774402
     const access_token = 'EAAJ1fU44KCoBOxBNeBGQj24ZBovhmIFXpHhqqcJVMXuF0Ll3AjQhE230nZBCQSoRoDxMfwxeLTrv3k3fnAD99ARYwjMJadx0f7RtU39G09DmRZCTtLQmuEz6y7OF9M6pD7B8j9A3ZBCqM6KEAjyvZCMm5ZC984zFqH5WkLxdQN0oZBjJE7hZCqn02GQ2sFOh7jj7gAZDZD';
     
     // Current timestamp in seconds

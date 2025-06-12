@@ -37,7 +37,7 @@ function HomeContent() {
   const searchParams = useSearchParams();
 
   const buildWhatsAppUrl = useCallback((message: string) => {
-    const base = 'https://wa.me/+96594040711';
+    const base = 'https://wa.me/+96566774402';
     const text = encodeURIComponent(message);
 
     // grab UTM and gclid
@@ -1190,7 +1190,7 @@ function HomeContent() {
                 <li className="flex items-start">
                   <i className="fas fa-phone-alt mt-1 ml-3 text-teal-500"></i>
                   <div>
-                    <a href="tel:+96594040711" className="hover:text-teal-300 transition-colors">96594040711</a>
+                    <a href="tel:+96566774402" className="hover:text-teal-300 transition-colors">66774402</a>
                   </div>
                 </li>
                 <li className="flex items-start">
