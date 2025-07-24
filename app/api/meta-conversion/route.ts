@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
 
 interface ConversionData {
+  phone?: string;
+  email?: string;
+  fbc?: string;
+  fbp?: string;
+  value?: number;
+  currency?: string;
   ip?: string;
   userAgent?: string;
   url?: string;
@@ -11,8 +17,17 @@ interface EventData {
   event_time: number;
   action_source: string;
   user_data: {
-    client_ip_address: string;
-    client_user_agent: string;
+    phone?: string;
+    email?: string;
+    fbc?: string;
+    fbp?: string;
+    client_ip_address?: string;
+    client_user_agent?: string;
+  };
+  custom_data?: {
+    content_name: string;
+    value: number;
+    currency: string;
   };
 }
 
@@ -27,28 +42,40 @@ export async function POST(request: Request) {
     const data = await request.json() as ConversionData;
     
     // Facebook Conversion API endpoint
-    const url = 'https://graph.facebook.com/v17.0/714361667908702/events';
-    
-    // Access token - updated for new number +96566774402
-    const access_token = 'EAAJ1fU44KCoBOxBNeBGQj24ZBovhmIFXpHhqqcJVMXuF0Ll3AjQhE230nZBCQSoRoDxMfwxeLTrv3k3fnAD99ARYwjMJadx0f7RtU39G09DmRZCTtLQmuEz6y7OF9M6pD7B8j9A3ZBCqM6KEAjyvZCMm5ZC984zFqH5WkLxdQN0oZBjJE7hZCqn02GQ2sFOh7jj7gAZDZD';
+    const PIXEL_ID = '714361667908702';
+    const ACCESS_TOKEN = 'EAAJ1fU44KCoBOxBNeBGQj24ZBovhmIFXpHhqqcJVMXuF0Ll3AjQhE230nZBCQSoRoDxMfwxeLTrv3k3fnAD99ARYwjMJadx0f7RtU39G09DmRZCTtLQmuEz6y7OF9M6pD7B8j9A3ZBCqM6KEAjyvZCMm5ZC984zFqH5WkLxdQN0oZBjJE7hZCqn02GQ2sFOh7jj7gAZDZD';
+    const url = `https://graph.facebook.com/v18.0/${PIXEL_ID}/events`;
     
     // Current timestamp in seconds
     const event_time = Math.floor(Date.now() / 1000);
+    
+    // Prepare user data
+    const user_data: EventData['user_data'] = {};
+    
+    // Add available user data
+    if (data.phone) user_data.phone = data.phone;
+    if (data.email) user_data.email = data.email;
+    if (data.fbc) user_data.fbc = data.fbc;
+    if (data.fbp) user_data.fbp = data.fbp;
+    if (data.ip) user_data.client_ip_address = data.ip;
+    if (data.userAgent) user_data.client_user_agent = data.userAgent;
     
     // Prepare the event data
     const eventData: ConversionPayload = {
       data: [
         {
-          event_name: "whatsapp_button",
+          event_name: data.phone ? "WhatsAppMessageSent" : "whatsapp_button",
           event_time: event_time,
           action_source: "website",
-          user_data: {
-            client_ip_address: data.ip || "",
-            client_user_agent: data.userAgent || "",
+          user_data: user_data,
+          custom_data: {
+            content_name: data.phone ? "WhatsApp Lead" : "WhatsApp Lead",
+            value: data.value || 1.0,
+            currency: data.currency || "USD"
           }
         }
       ],
-      access_token: access_token
+      access_token: ACCESS_TOKEN
     };
     
     // Send the event to Facebook

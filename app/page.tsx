@@ -56,9 +56,29 @@ function HomeContent() {
     return `${base}?${params.join('&')}`;
   }, [searchParams]);
 
-  // Set hydration state and create portal container
+  // Set hydration state, create portal container, and handle Meta Pixel parameters
   useEffect(() => {
     setIsHydrated(true);
+    
+    // Store fbc and fbp from URL parameters in localStorage for persistence
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const fbcParam = urlParams.get('fbc');
+      const fbpParam = urlParams.get('fbp');
+      
+      if (fbcParam) {
+        localStorage.setItem('_fbc', fbcParam);
+        // Also set as cookie for better compatibility
+        document.cookie = `_fbc=${fbcParam}; path=/; max-age=604800`; // 7 days
+      }
+      
+      if (fbpParam) {
+        localStorage.setItem('_fbp', fbpParam);
+        // Also set as cookie for better compatibility
+        document.cookie = `_fbp=${fbpParam}; path=/; max-age=604800`; // 7 days
+      }
+    }
+    
     // Create portal container for notifications
     if (typeof document !== "undefined") {
       let container = document.getElementById("notification-portal");
@@ -229,6 +249,54 @@ function HomeContent() {
     fbq?: (command: string, event: string, params?: Record<string, string | number | boolean | null>) => void;
   }
 
+  // Function to get Meta Pixel parameters (fbc and fbp)
+  const getMetaPixelParams = () => {
+    let fbc = '';
+    let fbp = '';
+    
+    if (typeof window !== 'undefined') {
+      // Try multiple sources in order of preference
+      
+      // 1. Check URL parameters first
+      const urlParams = new URLSearchParams(window.location.search);
+      fbc = urlParams.get('fbc') || '';
+      fbp = urlParams.get('fbp') || '';
+      
+      // 2. Check localStorage
+      if (!fbc) fbc = localStorage.getItem('_fbc') || '';
+      if (!fbp) fbp = localStorage.getItem('_fbp') || '';
+      
+      // 3. Check cookies as fallback
+      if (!fbc || !fbp) {
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+          const [name, value] = cookie.trim().split('=');
+          if (name === '_fbc' && !fbc) fbc = value;
+          if (name === '_fbp' && !fbp) fbp = value;
+        }
+      }
+      
+      // 4. Try to get fbp from Facebook Pixel if available
+      if (!fbp && (window as any).fbq && (window as any).fbq.getState) {
+        try {
+          const pixelState = (window as any).fbq.getState();
+          if (pixelState && pixelState.pixels && pixelState.pixels['714361667908702']) {
+            const fbpFromPixel = pixelState.pixels['714361667908702'].userData._fbp;
+            if (fbpFromPixel) {
+              fbp = fbpFromPixel;
+              // Store it for future use
+              localStorage.setItem('_fbp', fbp);
+            }
+          }
+        } catch (e) {
+          console.log('Could not retrieve fbp from Facebook Pixel state');
+        }
+      }
+    }
+    
+    return { fbc, fbp };
+  };
+
   // Track WhatsApp button click
   const trackWhatsAppClick = () => {
     if (typeof window !== 'undefined' && (window as SnaptrWindow).snaptr) {
@@ -268,7 +336,10 @@ function HomeContent() {
         fbqWindow.fbq('track', 'whatsapp_button');
       }
 
-      // Also send server-side conversion event
+      // Get Meta Pixel tracking parameters
+      const { fbc, fbp } = getMetaPixelParams();
+
+      // Also send server-side conversion event with fbc and fbp
       try {
         fetch('/api/meta-conversion', {
           method: 'POST',
@@ -277,7 +348,9 @@ function HomeContent() {
           },
           body: JSON.stringify({
             userAgent: navigator.userAgent,
-            url: window.location.href
+            url: window.location.href,
+            fbc: fbc,
+            fbp: fbp
           }),
         });
       } catch (error) {
