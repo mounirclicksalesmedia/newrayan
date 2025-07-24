@@ -7,6 +7,7 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 import Script from "next/script";
 import { useSearchParams } from 'next/navigation';
+import Clarity from '@microsoft/clarity';
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -98,9 +99,21 @@ function HomeContent() {
     }
   }, []);
 
-  // Smooth scroll function
+  // Smooth scroll function with Clarity tracking
   const scrollToSection = useCallback((e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
     e.preventDefault();
+    
+    // Microsoft Clarity navigation tracking
+    if (typeof window !== 'undefined') {
+      try {
+        Clarity.event('navigation_click');
+        Clarity.setTag('navigation_target', sectionId);
+        console.log(`✅ Clarity: Navigation to ${sectionId} tracked`);
+      } catch (error) {
+        console.log('Clarity tracking error:', error);
+      }
+    }
+    
     const section = document.getElementById(sectionId);
     if (section) {
       window.scrollTo({
@@ -154,9 +167,19 @@ function HomeContent() {
     return () => clearInterval(interval);
   }, [isHydrated]);
 
-  // Social proof notification effect - only run on client side
+  // Social proof notification effect with Clarity tracking - only run on client side
   useEffect(() => {
     if (!isHydrated) return;
+    
+    // Track social proof engagement
+    if (typeof window !== 'undefined') {
+      try {
+        Clarity.event('social_proof_initialized');
+        Clarity.setTag('engagement_feature', 'live_notifications');
+      } catch (error) {
+        console.log('Clarity tracking error:', error);
+      }
+    }
     
     let notificationTimer: NodeJS.Timeout;
     let cycleTimer: NodeJS.Timeout;
@@ -311,6 +334,17 @@ function HomeContent() {
 
   // Track WhatsApp button click
   const trackWhatsAppClick = () => {
+    // Microsoft Clarity event tracking
+    if (typeof window !== 'undefined') {
+      try {
+        Clarity.event('whatsapp_click');
+        Clarity.setTag('conversion_action', 'whatsapp_contact');
+        console.log('✅ Clarity: WhatsApp click tracked');
+      } catch (error) {
+        console.log('Clarity tracking error:', error);
+      }
+    }
+
     if (typeof window !== 'undefined' && (window as SnaptrWindow).snaptr) {
       const snaptr = (window as SnaptrWindow).snaptr;
       if (snaptr) {
@@ -477,6 +511,19 @@ function HomeContent() {
   // Helper function to handle WhatsApp clicks
   const handleWhatsAppClick = (message: string) => (e: React.MouseEvent) => {
     e.preventDefault();
+    
+    // Microsoft Clarity tracking for specific WhatsApp messages
+    if (typeof window !== 'undefined') {
+      try {
+        Clarity.event('whatsapp_message_click');
+        Clarity.setTag('message_type', message.includes('موعد') ? 'appointment' : 'inquiry');
+        Clarity.setTag('button_location', 'main_cta');
+        console.log('✅ Clarity: WhatsApp message click tracked');
+      } catch (error) {
+        console.log('Clarity tracking error:', error);
+      }
+    }
+    
     trackWhatsAppClick();
     // Open WhatsApp with UTM parameters after tracking is complete
     const whatsappUrl = buildWhatsAppUrl(message);
@@ -851,6 +898,17 @@ function HomeContent() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             onViewportEnter={() => {
+              // Microsoft Clarity section view tracking
+              if (typeof window !== 'undefined') {
+                try {
+                  Clarity.event('services_section_viewed');
+                  Clarity.setTag('section', 'services');
+                  console.log('✅ Clarity: Services section viewed');
+                } catch (error) {
+                  console.log('Clarity tracking error:', error);
+                }
+              }
+
               if (typeof window !== 'undefined' && (window as SnaptrWindow).snaptr) {
                 const snaptr = (window as SnaptrWindow).snaptr;
                 if (snaptr) {
