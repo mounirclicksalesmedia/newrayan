@@ -246,7 +246,18 @@ function HomeContent() {
 
   // Define fbq type for TypeScript
   interface FbqWindow extends Window {
-    fbq?: (command: string, event: string, params?: Record<string, string | number | boolean | null>) => void;
+    fbq?: {
+      (command: string, event: string, params?: Record<string, string | number | boolean | null>): void;
+      getState?: () => {
+        pixels?: {
+          [key: string]: {
+            userData?: {
+              _fbp?: string;
+            };
+          };
+        };
+      };
+    };
   }
 
   // Function to get Meta Pixel parameters (fbc and fbp)
@@ -277,10 +288,11 @@ function HomeContent() {
       }
       
       // 4. Try to get fbp from Facebook Pixel if available
-      if (!fbp && (window as any).fbq && (window as any).fbq.getState) {
+      const fbqWindow = window as FbqWindow;
+      if (!fbp && fbqWindow.fbq && fbqWindow.fbq.getState) {
         try {
-          const pixelState = (window as any).fbq.getState();
-          if (pixelState && pixelState.pixels && pixelState.pixels['714361667908702']) {
+          const pixelState = fbqWindow.fbq.getState();
+          if (pixelState?.pixels?.['714361667908702']?.userData?._fbp) {
             const fbpFromPixel = pixelState.pixels['714361667908702'].userData._fbp;
             if (fbpFromPixel) {
               fbp = fbpFromPixel;
@@ -288,7 +300,7 @@ function HomeContent() {
               localStorage.setItem('_fbp', fbp);
             }
           }
-        } catch (e) {
+        } catch {
           console.log('Could not retrieve fbp from Facebook Pixel state');
         }
       }
