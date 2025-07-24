@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     const url = `https://graph.facebook.com/v18.0/${PIXEL_ID}/events`;
     
     // Current timestamp in seconds
-    const event_time = Math.floor(Date.now() / 1000);
+    const event_time = Math.floor(Date.now() / 1000); // current Unix time
     
     // Prepare user data
     const user_data: EventData['user_data'] = {};
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
       data: [
         {
           event_name: data.phone ? "WhatsAppMessageSent" : "whatsapp_button",
-          event_time: event_time,
+          event_time: event_time, // current Unix time
           action_source: "website",
           user_data: user_data,
           custom_data: {

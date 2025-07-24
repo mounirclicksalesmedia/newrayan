@@ -121,7 +121,7 @@ export async function POST(request: Request) {
       
       return {
         event_name: event.event_name,
-        event_time: parseInt(event.event_time),
+        event_time: parseInt(event.event_time), // current Unix time
         action_source: event.action_source,
         user_data: {
           phone: hashedPhone,
