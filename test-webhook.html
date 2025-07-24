@@ -43,6 +43,12 @@
 }
         </textarea>
         
+        <div class="container" style="background: #e7f3ff; border-left: 4px solid #2196F3;">
+            <h4>🔐 Security Note</h4>
+            <p><strong>Data Hashing:</strong> The API automatically hashes phone and email data using SHA-256 before sending to Meta Conversion API, as required by Facebook's security standards.</p>
+            <p><strong>GoHighLevel Integration:</strong> Send plain text phone/email data - the API will handle the hashing automatically.</p>
+        </div>
+        
         <button onclick="testWebhook()">Send Test Webhook</button>
         
         <div id="result" class="result" style="display:none;"></div>

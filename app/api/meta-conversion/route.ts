@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 interface ConversionData {
   phone?: string;
@@ -34,6 +35,12 @@ interface EventData {
 interface ConversionPayload {
   data: EventData[];
   access_token: string;
+}
+
+// Function to hash user data for Meta Conversion API
+function hashSHA256(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  return crypto.createHash('sha256').update(value.trim().toLowerCase()).digest('hex');
 }
 
 // GET handler for when someone accesses the endpoint directly
@@ -75,9 +82,16 @@ export async function POST(request: Request) {
     // Prepare user data
     const user_data: EventData['user_data'] = {};
     
-    // Add available user data
-    if (data.phone) user_data.phone = data.phone;
-    if (data.email) user_data.email = data.email;
+    // Hash and add user data (Meta requires hashed PII)
+    console.log(`🔐 Hashing user data for conversion`);
+    if (data.phone) {
+      user_data.phone = hashSHA256(data.phone);
+      console.log(`📞 Phone hashed: ${user_data.phone ? user_data.phone.substring(0, 10) + '...' : 'N/A'}`);
+    }
+    if (data.email) {
+      user_data.email = hashSHA256(data.email);
+      console.log(`📧 Email hashed: ${user_data.email ? user_data.email.substring(0, 10) + '...' : 'N/A'}`);
+    }
     if (data.fbc) user_data.fbc = data.fbc;
     if (data.fbp) user_data.fbp = data.fbp;
     if (data.ip) user_data.client_ip_address = data.ip;

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 interface GoHighLevelWebhookData {
   data: Array<{
@@ -39,6 +40,12 @@ interface MetaEventData {
 interface MetaConversionPayload {
   data: MetaEventData[];
   access_token: string;
+}
+
+// Function to hash user data for Meta Conversion API
+function hashSHA256(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  return crypto.createHash('sha256').update(value.trim().toLowerCase()).digest('hex');
 }
 
 // GET handler for when someone accesses the endpoint directly
@@ -101,22 +108,34 @@ export async function POST(request: Request) {
     const url = `https://graph.facebook.com/v18.0/${PIXEL_ID}/events`;
     
     // Transform GoHighLevel webhook data to Meta Conversion API format
-    const metaEvents: MetaEventData[] = webhookData.data.map(event => ({
-      event_name: event.event_name,
-      event_time: parseInt(event.event_time),
-      action_source: event.action_source,
-      user_data: {
-        phone: event.user_data.phone,
-        email: event.user_data.email,
-        fbc: event.user_data.fbc,
-        fbp: event.user_data.fbp
-      },
-      custom_data: {
-        content_name: event.custom_data.content_name,
-        value: event.custom_data.value,
-        currency: event.custom_data.currency
-      }
-    }));
+    const metaEvents: MetaEventData[] = webhookData.data.map(event => {
+      console.log(`🔐 Hashing user data for event: ${event.event_name}`);
+      console.log(`📞 Original phone: ${event.user_data.phone ? '[REDACTED]' : 'N/A'}`);
+      console.log(`📧 Original email: ${event.user_data.email ? '[REDACTED]' : 'N/A'}`);
+      
+      const hashedPhone = hashSHA256(event.user_data.phone);
+      const hashedEmail = hashSHA256(event.user_data.email);
+      
+      console.log(`🔒 Hashed phone: ${hashedPhone ? hashedPhone.substring(0, 10) + '...' : 'N/A'}`);
+      console.log(`🔒 Hashed email: ${hashedEmail ? hashedEmail.substring(0, 10) + '...' : 'N/A'}`);
+      
+      return {
+        event_name: event.event_name,
+        event_time: parseInt(event.event_time),
+        action_source: event.action_source,
+        user_data: {
+          phone: hashedPhone,
+          email: hashedEmail,
+          fbc: event.user_data.fbc,
+          fbp: event.user_data.fbp
+        },
+        custom_data: {
+          content_name: event.custom_data.content_name,
+          value: event.custom_data.value,
+          currency: event.custom_data.currency
+        }
+      };
+    });
 
     // Prepare the payload for Meta Conversion API
     const metaPayload: MetaConversionPayload = {
