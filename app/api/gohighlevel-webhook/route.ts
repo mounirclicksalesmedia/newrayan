@@ -71,8 +71,29 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  console.log("🔔 Webhook HIT from GHL - POST request received");
+  console.log("📅 Timestamp:", new Date().toISOString());
+  
   try {
     const webhookData = await request.json() as GoHighLevelWebhookData;
+    
+    console.log("🔔 Webhook HIT from GHL:");
+    console.log("📋 Full payload:", JSON.stringify(webhookData, null, 2));
+    console.log("📊 Events count:", webhookData.data?.length || 0);
+    
+    // Log each event details
+    if (webhookData.data && Array.isArray(webhookData.data)) {
+      webhookData.data.forEach((event, index) => {
+        console.log(`📝 Event ${index + 1}:`, {
+          event_name: event.event_name,
+          event_time: event.event_time,
+          phone: event.user_data?.phone,
+          email: event.user_data?.email,
+          fbc: event.user_data?.fbc,
+          fbp: event.user_data?.fbp
+        });
+      });
+    }
     
     // Facebook Conversion API configuration
     const PIXEL_ID = '714361667908702';
@@ -103,6 +124,12 @@ export async function POST(request: Request) {
       access_token: ACCESS_TOKEN
     };
 
+    console.log('🚀 Sending to Meta Conversion API:', {
+      url: url,
+      eventsCount: metaEvents.length,
+      pixelId: PIXEL_ID
+    });
+    
     // Send the event to Facebook Conversion API
     const response = await fetch(url, {
       method: 'POST',
@@ -114,22 +141,35 @@ export async function POST(request: Request) {
 
     const result = await response.json();
     
-    console.log('GoHighLevel webhook processed:', {
-      events: metaEvents.length,
+    console.log('✅ Meta Conversion API Response:', {
+      status: response.status,
+      statusText: response.statusText,
       result: result
+    });
+    
+    console.log('🎯 GoHighLevel webhook processed successfully:', {
+      events: metaEvents.length,
+      facebookResponse: result
     });
 
     return NextResponse.json({ 
       success: true, 
       message: `Processed ${metaEvents.length} events`,
-      result 
+      result,
+      timestamp: new Date().toISOString()
     });
     
   } catch (error) {
-    console.error('GoHighLevel webhook processing error:', error);
+    console.error('❌ GoHighLevel webhook processing error:', error);
+    console.error('🔍 Error details:', {
+      message: (error as Error).message,
+      stack: (error as Error).stack
+    });
+    
     return NextResponse.json({ 
       success: false, 
-      error: (error as Error).message 
+      error: (error as Error).message,
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 } 

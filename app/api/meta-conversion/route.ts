@@ -49,8 +49,20 @@ export async function GET() {
 
 // Meta Pixel server-side conversion API
 export async function POST(request: Request) {
+  console.log("🔔 Meta Conversion API HIT - POST request received");
+  console.log("📅 Timestamp:", new Date().toISOString());
+  
   try {
     const data = await request.json() as ConversionData;
+    
+    console.log("📋 Conversion data received:", {
+      hasPhone: !!data.phone,
+      hasEmail: !!data.email,
+      hasFbc: !!data.fbc,
+      hasFbp: !!data.fbp,
+      value: data.value,
+      currency: data.currency
+    });
     
     // Facebook Conversion API endpoint
     const PIXEL_ID = '714361667908702';
@@ -89,6 +101,12 @@ export async function POST(request: Request) {
       access_token: ACCESS_TOKEN
     };
     
+    console.log('🚀 Sending to Meta Conversion API:', {
+      url: url,
+      eventName: eventData.data[0].event_name,
+      pixelId: PIXEL_ID
+    });
+    
     // Send the event to Facebook
     const response = await fetch(url, {
       method: 'POST',
@@ -100,9 +118,28 @@ export async function POST(request: Request) {
     
     const result = await response.json();
     
-    return NextResponse.json({ success: true, result });
+    console.log('✅ Meta Conversion API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      result: result
+    });
+    
+    return NextResponse.json({ 
+      success: true, 
+      result,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    console.error('Meta Conversion API error:', error);
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    console.error('❌ Meta Conversion API error:', error);
+    console.error('🔍 Error details:', {
+      message: (error as Error).message,
+      stack: (error as Error).stack
+    });
+    
+    return NextResponse.json({ 
+      success: false, 
+      error: (error as Error).message,
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
   }
 } 
