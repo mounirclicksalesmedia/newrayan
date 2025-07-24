@@ -41,6 +41,35 @@ interface MetaConversionPayload {
   access_token: string;
 }
 
+// GET handler for when someone accesses the endpoint directly
+export async function GET() {
+  return NextResponse.json({
+    message: "GoHighLevel Webhook Endpoint",
+    description: "This endpoint accepts POST requests from GoHighLevel webhooks to forward conversion data to Facebook Conversion API",
+    usage: "Configure this URL as your GoHighLevel webhook endpoint",
+    methods: ["POST"],
+    expectedPayload: {
+      data: [{
+        event_name: "WhatsAppMessageSent",
+        event_time: "unix_timestamp",
+        action_source: "website",
+        user_data: {
+          phone: "user_phone",
+          email: "user_email",
+          fbc: "facebook_click_id",
+          fbp: "facebook_browser_id"
+        },
+        custom_data: {
+          content_name: "WhatsApp Lead",
+          value: 1.0,
+          currency: "USD"
+        }
+      }]
+    },
+    status: "active"
+  });
+}
+
 export async function POST(request: Request) {
   try {
     const webhookData = await request.json() as GoHighLevelWebhookData;

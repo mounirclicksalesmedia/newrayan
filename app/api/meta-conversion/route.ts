@@ -36,6 +36,17 @@ interface ConversionPayload {
   access_token: string;
 }
 
+// GET handler for when someone accesses the endpoint directly
+export async function GET() {
+  return NextResponse.json({
+    message: "Meta Conversion API Endpoint",
+    description: "This endpoint accepts POST requests to send conversion data to Facebook Conversion API",
+    usage: "Send POST request with conversion data including fbc, fbp, phone, email, etc.",
+    methods: ["POST"],
+    status: "active"
+  });
+}
+
 // Meta Pixel server-side conversion API
 export async function POST(request: Request) {
   try {
