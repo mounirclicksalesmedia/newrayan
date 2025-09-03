@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import Script from "next/script";
 import { useSearchParams } from 'next/navigation';
 import Clarity from '@microsoft/clarity';
+import BeforeAfterSlider from './components/BeforeAfterSlider';
 
 // Brand colors
 const brandOrange = "#f59120";
@@ -884,6 +885,84 @@ function HomeContent() {
               <h3 className="text-xl font-bold text-gray-800 mb-3">رعاية خاصة للأطفال</h3>
               <p className="text-gray-600">نوفر رعاية خاصة للأطفال في بيئة مريحة ومطمئنة مع أطباء متخصصين في طب أسنان الأطفال</p>
             </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Before & After Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">نتائج مذهلة - قبل وبعد</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">شاهد التحول الرائع الذي حققناه لمرضانا في علاج الأسنان والتجميل</p>
+          </motion.div>
+          
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">تجميل الأسنان</h3>
+              <BeforeAfterSlider
+                beforeImage="/comparison/before.jpg"
+                afterImage="/comparison/after.jpg"
+                beforeAlt="حالة الأسنان قبل العلاج - الحالة الأولى"
+                afterAlt="حالة الأسنان بعد العلاج - الحالة الأولى"
+                className="mb-4"
+              />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">ابتسامة هوليوود</h3>
+              <BeforeAfterSlider
+                beforeImage="/comparison/before1.jpg"
+                afterImage="/comparison/after1.jpg"
+                beforeAlt="حالة الأسنان قبل العلاج - الحالة الثانية"
+                afterAlt="حالة الأسنان بعد العلاج - الحالة الثانية"
+                className="mb-4"
+              />
+            </motion.div>
+          </motion.div>
+
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">هل تريد نتائج مماثلة؟ احجز استشارتك المجانية اليوم ودع خبرائنا يساعدونك في الحصول على الابتسامة التي تحلم بها</p>
+            <motion.a 
+              href={buildWhatsAppUrl("مرحباً، شاهدت نتائج العلاج المذهلة وأرغب في حجز استشارة مجانية")} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-bold transition duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleWhatsAppClick("مرحباً، شاهدت نتائج العلاج المذهلة وأرغب في حجز استشارة مجانية")}
+            >
+              <i className="fab fa-whatsapp text-xl"></i>
+              احجز استشارة مجانية الآن
+            </motion.a>
           </motion.div>
         </div>
       </section>

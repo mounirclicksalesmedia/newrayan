@@ -81,3 +81,54 @@ body {
 .hover\:text-whatsapp:hover {
   color: var(--color-whatsapp);
 }
+
+/* Before/After Slider Styles */
+.before-after-container {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.before-after-container:active {
+  cursor: col-resize;
+}
+
+.slider-handle {
+  cursor: col-resize;
+  transition: transform 0.2s ease;
+}
+
+.slider-handle:hover {
+  transform: scale(1.1);
+}
+
+.slider-handle:active {
+  transform: scale(1.05);
+}
+
+/* Custom cursor for dragging */
+.dragging {
+  cursor: col-resize !important;
+}
+
+.dragging * {
+  cursor: col-resize !important;
+}
+
+/* Smooth transitions for the slider */
+.slider-transition {
+  transition: clip-path 0.1s ease-out;
+}
+
+/* Prevent text selection during drag */
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
