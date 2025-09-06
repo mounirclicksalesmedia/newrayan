@@ -47,8 +47,17 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
 
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "رقم الهاتف مطلوب";
-    } else if (!/^(\+965)?[0-9]{8}$/.test(formData.phoneNumber.replace(/\s/g, ""))) {
-      newErrors.phoneNumber = "رقم الهاتف غير صحيح";
+    } else {
+      // Clean the phone number (remove spaces, dashes, etc.)
+      const cleanPhone = formData.phoneNumber.replace(/[\s\-\(\)]/g, "");
+      
+      // Kuwait phone number validation - accepts multiple formats:
+      // +96512345678, 96512345678, 012345678, 12345678
+      const kuwaitPhoneRegex = /^(\+965|965|0)?[1-9][0-9]{7}$/;
+      
+      if (!kuwaitPhoneRegex.test(cleanPhone)) {
+        newErrors.phoneNumber = "رقم الهاتف غير صحيح (مثال: 99123456 أو 96599123456)";
+      }
     }
 
     if (!formData.selectedService) {
@@ -84,8 +93,23 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
           (service) => service.value === formData.selectedService
         )?.label || formData.selectedService;
 
+        // Normalize phone number for display
+        const cleanPhone = formData.phoneNumber.replace(/[\s\-\(\)]/g, "");
+        let displayPhone = cleanPhone;
+        
+        // Add +965 if not present and format for display
+        if (cleanPhone.startsWith("+965")) {
+          displayPhone = cleanPhone;
+        } else if (cleanPhone.startsWith("965")) {
+          displayPhone = `+${cleanPhone}`;
+        } else if (cleanPhone.startsWith("0")) {
+          displayPhone = `+965${cleanPhone.substring(1)}`;
+        } else if (cleanPhone.length === 8) {
+          displayPhone = `+965${cleanPhone}`;
+        }
+
         const whatsappMessage = `مرحباً، أنا ${formData.name}
-رقم الهاتف: ${formData.phoneNumber}
+رقم الهاتف: ${displayPhone}
 الخدمة المطلوبة: ${selectedServiceLabel}
 ${formData.message ? `رسالة إضافية: ${formData.message}` : ""}
 
@@ -179,7 +203,7 @@ ${formData.message ? `رسالة إضافية: ${formData.message}` : ""}
             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.phoneNumber ? "border-red-500" : "border-gray-300"
             }`}
-            placeholder="مثال: 99123456"
+            placeholder="مثال: 99123456 أو 96599123456 أو 099123456"
             dir="ltr"
           />
           {errors.phoneNumber && (
