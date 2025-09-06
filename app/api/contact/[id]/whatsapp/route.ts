@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check if user is authenticated
@@ -17,7 +17,8 @@ export async function PATCH(
     }
 
     const { sent } = await request.json();
-    const submissionId = params.id;
+    const resolvedParams = await params;
+    const submissionId = resolvedParams.id;
 
     // Update the submission
     const updatedSubmission = await prisma.contactSubmission.update({
