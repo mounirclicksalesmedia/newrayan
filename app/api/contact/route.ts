@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // This endpoint is for admin dashboard to fetch submissions
     const submissions = await prisma.contactSubmission.findMany({

@@ -79,8 +79,6 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        
         // Create WhatsApp message
         const selectedServiceLabel = dentalServices.find(
           (service) => service.value === formData.selectedService
@@ -257,7 +255,7 @@ ${formData.message ? `رسالة إضافية: ${formData.message}` : ""}
 
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-500">
-          بالضغط على "أرسل عبر واتساب" ستتم إعادة توجيهك لواتساب مع بياناتك
+          بالضغط على &quot;أرسل عبر واتساب&quot; ستتم إعادة توجيهك لواتساب مع بياناتك
         </p>
       </div>
     </motion.div>

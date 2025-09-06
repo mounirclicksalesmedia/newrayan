@@ -34,7 +34,7 @@ export default function LoginPage() {
           router.push("/admin/dashboard");
         }
       }
-    } catch (error) {
+    } catch {
       setError("حدث خطأ أثناء تسجيل الدخول");
     } finally {
       setIsLoading(false);
