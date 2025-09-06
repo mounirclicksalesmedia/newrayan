@@ -88,6 +88,42 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
       });
 
       if (response.ok) {
+        // Track Lead event for dental page Meta Pixel
+        if (typeof window !== 'undefined') {
+          // Client-side Meta Pixel tracking
+          if ((window as any).fbq) {
+            (window as any).fbq('track', 'Lead', {
+              content_name: 'Dental Service Inquiry',
+              content_category: 'dental_services',
+              value: 1,
+              currency: 'KWD'
+            });
+          }
+
+          // Server-side Conversion API tracking
+          const fbc = localStorage.getItem('_fbc') || '';
+          const fbp = localStorage.getItem('_fbp') || '';
+
+          fetch('/api/meta-conversion-dental', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userAgent: navigator.userAgent,
+              url: window.location.href,
+              fbc: fbc,
+              fbp: fbp,
+              eventType: 'form_submit',
+              formData: {
+                name: formData.name,
+                phoneNumber: formData.phoneNumber,
+                selectedService: formData.selectedService
+              }
+            }),
+          }).catch(error => console.error('Meta Conversion API error:', error));
+        }
+
         // Create WhatsApp message
         const selectedServiceLabel = dentalServices.find(
           (service) => service.value === formData.selectedService
@@ -114,6 +150,37 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
 ${formData.message ? `رسالة إضافية: ${formData.message}` : ""}
 
 أرغب في حجز موعد في عيادة نيو ريان للأسنان.`;
+
+        // Track WhatsApp message event
+        if (typeof window !== 'undefined') {
+          // Client-side Meta Pixel tracking
+          if ((window as any).fbq) {
+            (window as any).fbq('track', 'sendWhatsappMessage', {
+              content_name: 'WhatsApp Message Sent',
+              content_category: 'dental_contact',
+              value: 1,
+              currency: 'KWD'
+            });
+          }
+
+          // Server-side Conversion API tracking
+          const fbc = localStorage.getItem('_fbc') || '';
+          const fbp = localStorage.getItem('_fbp') || '';
+
+          fetch('/api/meta-conversion-dental', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userAgent: navigator.userAgent,
+              url: window.location.href,
+              fbc: fbc,
+              fbp: fbp,
+              eventType: 'whatsapp_message'
+            }),
+          }).catch(error => console.error('Meta Conversion API error:', error));
+        }
 
         // Redirect to WhatsApp
         const whatsappUrl = `https://wa.me/+96566774402?text=${encodeURIComponent(whatsappMessage)}`;
