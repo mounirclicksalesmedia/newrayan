@@ -105,24 +105,27 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
           const fbc = localStorage.getItem('_fbc') || '';
           const fbp = localStorage.getItem('_fbp') || '';
 
-          fetch('/api/meta-conversion-dental', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userAgent: navigator.userAgent,
-              url: window.location.href,
-              fbc: fbc,
-              fbp: fbp,
-              eventType: 'form_submit',
-              formData: {
-                name: formData.name,
-                phoneNumber: formData.phoneNumber,
-                selectedService: formData.selectedService
-              }
-            }),
-          }).catch(error => console.error('Meta Conversion API error:', error));
+          // Non-blocking Meta Conversion API call
+          setTimeout(() => {
+            fetch('/api/meta-conversion-dental', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                fbc: fbc,
+                fbp: fbp,
+                eventType: 'form_submit',
+                formData: {
+                  name: formData.name,
+                  phoneNumber: formData.phoneNumber,
+                  selectedService: formData.selectedService
+                }
+              }),
+            }).catch(error => console.error('Meta Conversion API error:', error));
+          }, 100);
         }
 
         // Create WhatsApp message
@@ -169,19 +172,22 @@ ${formData.message ? `رسالة إضافية: ${formData.message}` : ""}
           const fbc = localStorage.getItem('_fbc') || '';
           const fbp = localStorage.getItem('_fbp') || '';
 
-          fetch('/api/meta-conversion-dental', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userAgent: navigator.userAgent,
-              url: window.location.href,
-              fbc: fbc,
-              fbp: fbp,
-              eventType: 'whatsapp_message'
-            }),
-          }).catch(error => console.error('Meta Conversion API error:', error));
+          // Non-blocking Meta Conversion API call
+          setTimeout(() => {
+            fetch('/api/meta-conversion-dental', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                fbc: fbc,
+                fbp: fbp,
+                eventType: 'whatsapp_message'
+              }),
+            }).catch(error => console.error('Meta Conversion API error:', error));
+          }, 100);
         }
 
         // Redirect to WhatsApp

@@ -25,8 +25,6 @@ export async function POST(request: NextRequest) {
         client_user_agent: string;
         fbc?: string;
         fbp?: string;
-        fn?: string;
-        ph?: string;
       };
       action_source: string;
       custom_data?: {
@@ -51,16 +49,6 @@ export async function POST(request: NextRequest) {
 
     // Add form data for Lead event
     if (eventType === 'form_submit' && formData) {
-      // Hash email if available (not implemented in current form but good practice)
-      if (formData.name) {
-        // Add name data if needed
-        eventData.user_data.fn = formData.name.toLowerCase();
-      }
-      if (formData.phoneNumber) {
-        // Add phone data
-        eventData.user_data.ph = formData.phoneNumber.replace(/[^0-9+]/g, '');
-      }
-      
       // Add custom data
       eventData.custom_data = {
         service: formData.selectedService,
@@ -87,8 +75,18 @@ export async function POST(request: NextRequest) {
       console.log('✅ Meta Conversion API - Dental:', eventType, 'sent successfully');
       return NextResponse.json({ success: true, result });
     } else {
-      console.error('❌ Meta Conversion API Error:', result);
-      return NextResponse.json({ success: false, error: result }, { status: 400 });
+      console.error('❌ Meta Conversion API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        result: result,
+        eventData: eventData
+      });
+      return NextResponse.json({ 
+        success: false, 
+        error: result,
+        status: response.status,
+        eventData: eventData
+      }, { status: response.status });
     }
 
   } catch (error) {
