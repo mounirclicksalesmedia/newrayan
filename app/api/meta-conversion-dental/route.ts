@@ -16,7 +16,25 @@ export async function POST(request: NextRequest) {
                      '127.0.0.1';
 
     // Prepare event data
-    const eventData: any = {
+    const eventData: {
+      event_name: string;
+      event_time: number;
+      event_source_url: string;
+      user_data: {
+        client_ip_address: string;
+        client_user_agent: string;
+        fbc?: string;
+        fbp?: string;
+        fn?: string;
+        ph?: string;
+      };
+      action_source: string;
+      custom_data?: {
+        service?: string;
+        content_name?: string;
+        content_category?: string;
+      };
+    } = {
       event_name: eventType === 'form_submit' ? 'Lead' : 'sendWhatsappMessage',
       event_time: Math.floor(Date.now() / 1000),
       event_source_url: url,

@@ -91,8 +91,9 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
         // Track Lead event for dental page Meta Pixel
         if (typeof window !== 'undefined') {
           // Client-side Meta Pixel tracking
-          if ((window as any).fbq) {
-            (window as any).fbq('track', 'Lead', {
+          const fbq = (window as { fbq?: (command: string, event: string, params?: Record<string, unknown>) => void }).fbq;
+          if (fbq) {
+            fbq('track', 'Lead', {
               content_name: 'Dental Service Inquiry',
               content_category: 'dental_services',
               value: 1,
@@ -154,8 +155,9 @@ ${formData.message ? `رسالة إضافية: ${formData.message}` : ""}
         // Track WhatsApp message event
         if (typeof window !== 'undefined') {
           // Client-side Meta Pixel tracking
-          if ((window as any).fbq) {
-            (window as any).fbq('track', 'sendWhatsappMessage', {
+          const fbq = (window as { fbq?: (command: string, event: string, params?: Record<string, unknown>) => void }).fbq;
+          if (fbq) {
+            fbq('track', 'sendWhatsappMessage', {
               content_name: 'WhatsApp Message Sent',
               content_category: 'dental_contact',
               value: 1,
